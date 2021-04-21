@@ -1,7 +1,10 @@
 class Player:
     def __init__(self, name):
         self.name = name
-        self.remaining_ships = ["destroyer", "submarine", "battleship 1", "battleship 2", "aircraft carrier"]
+        self.remaining_ships = {"destroyer": 2, "submarine": 3, "battleship 1": 4, "battleship 2": 4, "aircraft carrier": 5}
+        self.rows = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
+        self.columns = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+
         self.my_board = [{"A1": "O", "A2": "O", "A3": "O", "A4": "O", "A5": "O",
                           "A6": "O", "A7": "O", "A8": "O", "A9": "O", "A10": "O"},
                          {"B1": "O", "B2": "O", "B3": "O", "B4": "O", "B5": "O",
@@ -57,4 +60,40 @@ class Player:
         print("\n")
 
     def display_remaining_ships(self):
-        print(f"{self.name}'s remaining ships: {self.remaining_ships}\n")
+        val = str(self.remaining_ships.keys())
+        val = val[11:-3]
+        x = ''.join(c for c in val if c not in "'")
+        print(f"{self.name}'s remaining ships: {x}\n")
+
+    def validate_input(self, choice):
+        if choice[0] in self.rows and choice[1:] in self.columns:
+            return choice
+        else:
+            return choice
+
+    def setup_board(self):
+        for i in self.remaining_ships:
+            try:
+                choice = self.validate_input(input(f"Where would you like to put {i}\n:").capitalize())
+                index = self.rows.index(choice[0])
+                print(self.my_board[index])
+                self.my_board[index].update({choice: "S"})
+                self.display_board()
+                print("it works")
+            except:
+                print("broke")
+            direction = self.get_direction()
+            print(direction)
+
+    def get_direction(self):
+        try:
+            direction = int(input("From that point, do you want the ship to go: \n1: up\n2: down\n3: left\n4: right\n:"))
+            assert 0 < direction <= 4
+        except:
+            print("pick one of the numbers")
+            direction = self.get_direction()
+        return direction
+
+    def validate_direction(self):
+        
+

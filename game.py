@@ -23,6 +23,9 @@ class Game:
         self.player_two.name = input(f"Player Two, what do you want your name to be?\n"
                                      f"For example your friend chose {self.player_one.name}.\n:")
         self.display_boards()
+        print(f"Great, now it's time for {self.player_one.name} to set up his ships. {self.player_two.name} "
+              f"please go away.")
+        self.player_one.setup_board()
 
     def display_boards(self):
         self.player_one.display_board()
@@ -32,6 +35,6 @@ class Game:
 
     def player_one_turn(self):
         self.round += 1
-        print(self.round)
         print("\n" * 24)
-        #input
+        print(self.round)
+
