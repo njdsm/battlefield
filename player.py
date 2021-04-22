@@ -69,31 +69,62 @@ class Player:
         if choice[0] in self.rows and choice[1:] in self.columns:
             return choice
         else:
-            return choice
+            return "Not an option"
 
     def setup_board(self):
         for i in self.remaining_ships:
+            index = 0
+            choice = ""
             try:
-                choice = self.validate_input(input(f"Where would you like to put {i}\n:").capitalize())
-                index = self.rows.index(choice[0])
-                print(self.my_board[index])
-                self.my_board[index].update({choice: "S"})
-                self.display_board()
-                print("it works")
+                choice = self.validate_input(input(f"Where would you like to put {i} length {self.remaining_ships[i]}"
+                                                   f"\n:").capitalize())
+                if choice == "Not an option":
+                    break
+
             except:
                 print("broke")
             direction = self.get_direction()
-            print(direction)
+            if self.validate_direction(choice, direction, self.remaining_ships[i]):
+                self.place_ship(index, choice)
+                print(self.remaining_ships[i])
+                print(i)
 
     def get_direction(self):
         try:
-            direction = int(input("From that point, do you want the ship to go: \n1: up\n2: down\n3: left\n4: right\n:"))
+            direction = int(input("From that point, which way should the ship go: \n1: up\n2: down\n3: left\n4: right\n:"))
             assert 0 < direction <= 4
         except:
             print("pick one of the numbers")
             direction = self.get_direction()
         return direction
 
-    def validate_direction(self):
-        
+    def validate_direction(self, choice, direction, ship_size):
+        print(choice)
+        print(direction)
+        print(ship_size)
+        valid = False
+        ship_spaces = []
+        x = 0
+        while x < ship_size:
+            # Validate up
+            if direction == 1:
+                
+            # Validate down
+            elif direction == 2:
+
+            # Validate left
+            elif direction == 3:
+
+            # Validate right
+            elif direction == 4:
+
+            x += 1
+        return valid
+
+    def place_ship(self, index, choice):
+        index = self.rows.index(choice[0])
+        print(self.my_board[index])
+        self.my_board[index].update({choice: "S"})
+        self.display_board()
+
 
