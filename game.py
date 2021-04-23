@@ -14,7 +14,7 @@ class Game:
         print("Welcome to Bad-leShip! It's just like the beloved childhood game, just not quite as fun.\n")
         self.player_one.name = input("Player One, what do you want your name to be?\n:")
         print(f"Great! Ok {self.player_one.name}, please pass the screen to Player Two. I'll give you some time...")
-        counter = 5
+        counter = 2
         while counter > 0:
             print(counter)
             time.sleep(1)

@@ -64,29 +64,37 @@ class Player:
         x = ''.join(c for c in val if c not in "'")
         print(f"{self.name}'s remaining ships: {x}\n")
 
-    def validate_input(self, choice):
+    def validate_input(self, i):
+        choice = input(f"Where would you like to put {i} length {self.remaining_ships[i]}"
+                       f"\n:").capitalize()
         if choice[0] in self.rows and choice[1:] in self.columns:
-            return choice
+            return [choice, False]
         else:
-            return "Not an option"
+            return ['', True]
 
-    def setup_board(self):
+    def input_loop(self, i):
+        choice = ['', True]
+        while choice[1]:
+            choice = self.validate_input(i)
+            if choice[0] != '':
+                choice[1] = False
+            else:
+                print("Not a valid option")
+        choice = choice[0]
+        return choice
+
+    def setup_board(self, placed_ships = []):
         for i in self.remaining_ships:
-            index = 0
-            choice = ""
-            try:
-                choice = self.validate_input(input(f"Where would you like to put {i} length {self.remaining_ships[i]}"
-                                                   f"\n:").capitalize())
-                if choice == "Not an option":
-                    break
-
-            except:
-                print("broke")
-            direction = self.get_direction()
-            if self.validate_direction(choice, direction, self.remaining_ships[i]):
-                self.place_ship(index, choice)
-                print(self.remaining_ships[i])
-                print(i)
+            if i not in placed_ships:
+                choice = self.input_loop(i)
+                direction = self.get_direction()
+                placement_list = self.validate_direction(choice, direction, self.remaining_ships[i])
+                if not placement_list:
+                    print("Not a valid direction to place your ship, Let's try again.")
+                    self.setup_board(placed_ships)
+                else:
+                    self.place_ship(placement_list)
+                placed_ships.append(i)
 
     def get_direction(self):
         try:
@@ -98,71 +106,69 @@ class Player:
             direction = self.get_direction()
         return direction
 
+    # This function will check each space the user wants the ship to occupy, if there is already a ship or if it is off
+    # the board, it will return false. if it's valid it will return a list of the spaces the ship will occupy
     def validate_direction(self, choice, direction, ship_size):
-        valid = False
+        spaces = [choice]
         i = 1
         while i < ship_size:
             choice_temp = choice
-            #x = self.rows.index(choice[0].upper())
-            #y = self.columns.index(choice[1:])
-            #print(x, y)
-            #self.display_board()
             # Validate up
             if direction == 1:
-                letter_index = self.rows.index(choice_temp[0]) - 1
-                choice_temp = self.rows[letter_index] + choice_temp[1:]
                 if self.rows.index(choice_temp[0]) - 1 < 0:
                     return False
-                elif self.my_board[x - 1][choice_temp] == "S":
+                letter_index = self.rows.index(choice_temp[0]) - i
+                choice_temp = self.rows[letter_index] + choice_temp[1:]
+                if self.my_board[letter_index][choice_temp] == "S":
                     return False
                 else:
-                    self.my_board[x - 1][choice_temp]
-                    valid = True
-
+                    spaces.append(choice_temp)
             # Validate down
             elif direction == 2:
+                if self.rows.index(choice_temp[0]) + 1 > 9:
+                    return False
                 letter_index = self.rows.index(choice_temp[0]) + i
                 choice_temp = self.rows[letter_index] + choice_temp[1:]
-                if letter_index > 9:
-                    return False
-                elif self.my_board[letter_index][choice_temp] == "S":
+                if self.my_board[letter_index][choice_temp] == "S":
                     return False
                 else:
-                    self.my_board[letter_index][choice_temp] = "S"
-                    valid = True
+                    spaces.append(choice_temp)
+                    # self.my_board[letter_index][choice_temp] = "S"
 
             # Validate left
             elif direction == 3:
-                number = int(choice_temp[1:]) - i
-                choice_temp = choice_temp[0] + str(number)
+                number_from_choice = choice_temp[1:]
+                number = int(number_from_choice) - i
                 if number < 0:
                     return False
-                elif self.my_board[x][choice_temp] == "S":
+                choice_temp = choice_temp[0] + str(number)
+                current_row = self.rows.index(choice_temp[0])
+                if self.my_board[current_row][number] == "S":
                     return False
                 else:
-                    self.my_board[x][choice_temp] = "S"
-                    valid = True
+                    spaces.append(choice_temp[0], number)
+                    #self.my_board[current_row][number] = "S"
 
             # Validate right
             elif direction == 4:
-                number = int(choice_temp[1:]) + i
-                choice_temp = choice_temp[0] + str(number)
+                number_from_choice = choice_temp[1:]
+                number = int(number_from_choice) + i
                 if number > 9:
                     return False
-                elif self.my_board[x][choice_temp] == "S":
+                choice_temp = choice_temp[0] + str(number)
+                current_row = self.rows.index(choice_temp[0])
+                if self.my_board[current_row][number] == "S":
                     return False
                 else:
                     self.my_board[x][choice_temp] = "S"
-                    valid = True
             i += 1
         self.my_board[self.rows.index(choice[0])][choice] = "S"
         self.display_board()
-        return valid
+        return spaces
 
-    def place_ship(self, index, choice):
-        index = self.rows.index(choice[0])
-        print(self.my_board[index])
-        self.my_board[index].update({choice: "S"})
+    def place_ship(self, choices):
+        for i in choices:
+            row = self.rows.index(i[0])
+            self.my_board[row][i] = "S"
         self.display_board()
-
 
