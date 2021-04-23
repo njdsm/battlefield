@@ -49,13 +49,12 @@ class Player:
     def display_board(self):
         print(f"{self.name}'s Board")
         i = 0
-        rows = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
         print("   1 2 3 4 5 6 7 8 9 10")
         while i < len(self.my_board):
             val = str(self.my_board[i].values())
             val = val[14:-3]
             x = ''.join(c for c in val if c not in "',")
-            print(rows[i] + "  " + x)
+            print(self.rows[i] + "  " + x)
             i += 1
         print("\n")
 
@@ -91,7 +90,8 @@ class Player:
 
     def get_direction(self):
         try:
-            direction = int(input("From that point, which way should the ship go: \n1: up\n2: down\n3: left\n4: right\n:"))
+            direction = int(input("From that point, which way should the ship go:"
+                                  " \n1: up\n2: down\n3: left\n4: right\n:"))
             assert 0 < direction <= 4
         except:
             print("pick one of the numbers")
@@ -99,26 +99,64 @@ class Player:
         return direction
 
     def validate_direction(self, choice, direction, ship_size):
-        print(choice)
-        print(direction)
-        print(ship_size)
         valid = False
-        ship_spaces = []
-        x = 0
-        while x < ship_size:
+        i = 1
+        while i < ship_size:
+            choice_temp = choice
+            #x = self.rows.index(choice[0].upper())
+            #y = self.columns.index(choice[1:])
+            #print(x, y)
+            #self.display_board()
             # Validate up
             if direction == 1:
-                
+                letter_index = self.rows.index(choice_temp[0]) - 1
+                choice_temp = self.rows[letter_index] + choice_temp[1:]
+                if self.rows.index(choice_temp[0]) - 1 < 0:
+                    return False
+                elif self.my_board[x - 1][choice_temp] == "S":
+                    return False
+                else:
+                    self.my_board[x - 1][choice_temp]
+                    valid = True
+
             # Validate down
             elif direction == 2:
+                letter_index = self.rows.index(choice_temp[0]) + i
+                choice_temp = self.rows[letter_index] + choice_temp[1:]
+                if letter_index > 9:
+                    return False
+                elif self.my_board[letter_index][choice_temp] == "S":
+                    return False
+                else:
+                    self.my_board[letter_index][choice_temp] = "S"
+                    valid = True
 
             # Validate left
             elif direction == 3:
+                number = int(choice_temp[1:]) - i
+                choice_temp = choice_temp[0] + str(number)
+                if number < 0:
+                    return False
+                elif self.my_board[x][choice_temp] == "S":
+                    return False
+                else:
+                    self.my_board[x][choice_temp] = "S"
+                    valid = True
 
             # Validate right
             elif direction == 4:
-
-            x += 1
+                number = int(choice_temp[1:]) + i
+                choice_temp = choice_temp[0] + str(number)
+                if number > 9:
+                    return False
+                elif self.my_board[x][choice_temp] == "S":
+                    return False
+                else:
+                    self.my_board[x][choice_temp] = "S"
+                    valid = True
+            i += 1
+        self.my_board[self.rows.index(choice[0])][choice] = "S"
+        self.display_board()
         return valid
 
     def place_ship(self, index, choice):
