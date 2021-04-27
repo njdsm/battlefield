@@ -4,12 +4,10 @@ from fleet import Fleet
 class Player:
     def __init__(self, name):
         self.name = name
-        #self.remaining_ships = {"destroyer": 2, "submarine": 3, "battleship 1": 4, "battleship 2": 4, "aircraft carrier": 5}
         self.remaining_ships = {"destroyer": 2, "submarine": 3}
         self.fleet = Fleet()
         self.rows = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
         self.columns = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
-
         self.my_board = [{"A1": "O", "A2": "O", "A3": "O", "A4": "O", "A5": "O",
                           "A6": "O", "A7": "O", "A8": "O", "A9": "O", "A10": "O"},
                          {"B1": "O", "B2": "O", "B3": "O", "B4": "O", "B5": "O",
@@ -70,7 +68,7 @@ class Player:
         print(f"{self.name}'s remaining ships: {x}\n")
 
     def validate_input(self, i):
-        choice = input(f"Where would you like to put {i} length {self.remaining_ships[i]}"
+        choice = input(f"Where would you like to put {i.name} length {i.size}"
                        f"\n:").capitalize()
         if choice[0] in self.rows and choice[1:] in self.columns:
             if self.my_board[self.rows.index(choice[0])][choice] != "S":
@@ -93,18 +91,18 @@ class Player:
         return choice[0]
 
     def setup_board(self, placed_ships):
-        for i in self.remaining_ships:
+        for i in self.fleet.ships:
             if i not in placed_ships:
                 choice = self.input_loop(i)
                 direction = self.get_direction()
-                placement_list = self.validate_direction(choice, direction, self.remaining_ships[i])
-                if not placement_list:
+                i.spaces = self.validate_direction(choice, direction, i.size)
+                if not i.spaces:
                     self.display_board()
                     print("Not a valid direction to place your ship, Let's try again.")
                     self.setup_board(placed_ships)
                 else:
-                    self.place_ship(placement_list)
-                placed_ships.append(i)
+                    self.place_ship(i.spaces)
+                placed_ships.append(i.name)
 
     def get_direction(self):
         try:
@@ -189,13 +187,15 @@ class Player:
         return guess
 
     def player_guess(self):
-        choice = input(f"Where would you like to check?"
+        choice = ""
+        while choice == "":
+            choice = input(f"Where would you like to check?"
                        f"\n:").capitalize()
         if choice[0] in self.rows and choice[1:] in self.columns:
-            if self.opponent_board[self.rows.index(choice[0])][choice] != "X" or "M":
+            if self.opponent_board[self.rows.index(choice[0])][choice] != "X" and "M":
                 return [choice, False]
             else:
-                print("You already guesses that space, try another one.")
+                print("You already guessed that space, try another one.")
                 return ['', True]
         else:
             return ['', True]
@@ -216,6 +216,13 @@ class Player:
         if opponent_board[row][guess] == "S":
             print("Hit!")
             opponent_board[row][guess] = "X"
+            for i in self.fleet.ships:
+                if guess in i.spaces:
+                    i.spaces.remove(guess)
+                    if len(i.spaces) == 0:
+                        print(f"You sank their {i.name}!!!")
+                    else:
+                        print(f"Hit opponent's {i.name}")
             self.opponent_board[row][guess] = "X"
         else:
             print("Miss!")

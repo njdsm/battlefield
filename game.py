@@ -17,34 +17,39 @@ class Game:
         self.countdown(1)
         self.player_two.name = input(f"Player Two, what do you want your name to be?\n"
                                      f"For example your friend chose {self.player_one.name}.\n:")
-        self.display_boards()
         print(f"Great, now it's time for {self.player_one.name} to set up his ships. {self.player_two.name} "
               f"please go away.")
-        #self.countdown(3)
-        for i in self.player_one.fleet.ship:
+        self.countdown(1)
+        self.display_boards(self.player_one)
+        for i in self.player_one.fleet.ships:
             print(i.name, i.size)
         placed_ships = []
         self.player_one.setup_board(placed_ships)
         print("\n" * 20)
         print(f"Great, now it's time for {self.player_two.name} to set up his ships. {self.player_one.name} "
               f"please go away.")
+        self.countdown(1)
+        self.display_boards(self.player_two)
         placed_ships = []
         self.player_two.setup_board(placed_ships)
         print(f"Ok, time to start the game!")
         while len(self.player_one.remaining_ships) > 0 and len(self.player_two.remaining_ships) > 0:
+            self.round += 1
             print("\n" * 20)
             print("Round: " + str(self.round))
             guess = self.player_one.turn_start()
             self.player_two.my_board = self.player_one.hit_check(guess, self.player_two.my_board)
+            self.remove_destroyed_ships(self.player_one)
+            self.countdown(1)
             guess = self.player_two.turn_start()
             self.player_one.my_board = self.player_two.hit_check(guess, self.player_one.my_board)
-            self.round += 1
+            self.remove_destroyed_ships(self.player_two)
+            self.countdown(1)
 
-    def display_boards(self):
-        self.player_one.display_board()
-        self.player_one.display_remaining_ships()
-        self.player_two.display_board()
-        self.player_two.display_remaining_ships()
+
+    def display_boards(self, player):
+        player.display_board()
+        player.display_remaining_ships()
 
     def countdown(self, counter):
         while counter > 0:
@@ -52,4 +57,9 @@ class Game:
             time.sleep(1)
             counter -= 1
         print("\n" * 100)
+
+    def remove_destroyed_ships(self, player):
+        for i in player.fleet.ships:
+            if len(i.spaces) == 0:
+                player.fleet.ships.remove(i)
 
