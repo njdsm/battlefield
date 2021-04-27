@@ -1,8 +1,12 @@
+from fleet import Fleet
+
+
 class Player:
     def __init__(self, name):
         self.name = name
         #self.remaining_ships = {"destroyer": 2, "submarine": 3, "battleship 1": 4, "battleship 2": 4, "aircraft carrier": 5}
         self.remaining_ships = {"destroyer": 2, "submarine": 3}
+        self.fleet = Fleet()
         self.rows = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
         self.columns = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
 

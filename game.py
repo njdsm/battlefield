@@ -14,17 +14,15 @@ class Game:
         print("Welcome to Bad-leShip! It's just like the beloved childhood game, just not quite as fun.\n")
         self.player_one.name = input("Player One, what do you want your name to be?\n:")
         print(f"Great! Ok {self.player_one.name}, please pass the screen to Player Two. I'll give you some time...")
-        counter = 2
-        while counter > 0:
-            print(counter)
-            time.sleep(1)
-            counter -= 1
-        print("\n" * 100)
+        self.countdown(1)
         self.player_two.name = input(f"Player Two, what do you want your name to be?\n"
                                      f"For example your friend chose {self.player_one.name}.\n:")
         self.display_boards()
         print(f"Great, now it's time for {self.player_one.name} to set up his ships. {self.player_two.name} "
               f"please go away.")
+        #self.countdown(3)
+        for i in self.player_one.fleet.ship:
+            print(i.name, i.size)
         placed_ships = []
         self.player_one.setup_board(placed_ships)
         print("\n" * 20)
@@ -48,5 +46,10 @@ class Game:
         self.player_two.display_board()
         self.player_two.display_remaining_ships()
 
-
+    def countdown(self, counter):
+        while counter > 0:
+            print(counter)
+            time.sleep(1)
+            counter -= 1
+        print("\n" * 100)
 
