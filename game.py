@@ -25,7 +25,14 @@ class Game:
         self.display_boards()
         print(f"Great, now it's time for {self.player_one.name} to set up his ships. {self.player_two.name} "
               f"please go away.")
-        self.player_one.setup_board()
+        placed_ships = []
+        self.player_one.setup_board(placed_ships)
+        print("\n" * 20)
+        print(f"Great, now it's time for {self.player_two.name} to set up his ships. {self.player_one.name} "
+              f"please go away.")
+        placed_ships = []
+        self.player_two.setup_board(placed_ships)
+
 
     def display_boards(self):
         self.player_one.display_board()
