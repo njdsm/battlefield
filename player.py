@@ -85,8 +85,8 @@ class Player:
                 choice[1] = False
             else:
                 print("Not a valid option")
-        choice = choice[0]
-        return choice
+        #choice = choice[0]
+        return choice[0]
 
     def setup_board(self, placed_ships):
         for i in self.remaining_ships:
@@ -177,3 +177,58 @@ class Player:
             self.my_board[row][i] = "S"
         self.display_board()
 
+    def turn_start(self):
+        print(f"{self.name}'s turn!")
+        self.display_board()
+        self.display_opponent_board()
+        guess = self.input_loop_player_guess()
+        return guess
+
+    def player_guess(self):
+        choice = input(f"Where would you like to check?"
+                       f"\n:").capitalize()
+        if choice[0] in self.rows and choice[1:] in self.columns:
+            if self.opponent_board[self.rows.index(choice[0])][choice] != "X" or "M":
+                return [choice, False]
+            else:
+                print("You already guesses that space, try another one.")
+                return ['', True]
+        else:
+            return ['', True]
+
+    def input_loop_player_guess(self):
+        choice = ['', True]
+        while choice[1]:
+            choice = self.player_guess()
+            if choice[0] != '':
+                choice[1] = False
+            else:
+                print("Not a valid option")
+        # choice = choice[0]
+        return choice[0]
+
+    def hit_check(self, guess, opponent_board):
+        row = self.rows.index(guess[0])
+        if opponent_board[row][guess] == "S":
+            print("Hit!")
+            opponent_board[row][guess] = "X"
+            self.opponent_board[row][guess] = "X"
+        else:
+            print("Miss!")
+            self.opponent_board[row][guess] = "M"
+        return opponent_board
+
+    def display_opponent_board(self):
+        i = 0
+        print("   1 2 3 4 5 6 7 8 9 10")
+        while i < len(self.opponent_board):
+            val = str(self.opponent_board[i].values())
+            val = val[14:-3]
+            x = ''.join(c for c in val if c not in "',")
+            print(self.rows[i] + "  " + x)
+            i += 1
+        print("\n")
+
+    # TODO refactor input_loop function line 80 and validate_input function line 68
+    # will want strings to be set as variables that pass in.
+    # will allow reuse of functions for player guesses and ship placement

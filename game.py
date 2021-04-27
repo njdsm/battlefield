@@ -32,7 +32,15 @@ class Game:
               f"please go away.")
         placed_ships = []
         self.player_two.setup_board(placed_ships)
-
+        print(f"Ok, time to start the game!")
+        while len(self.player_one.remaining_ships) > 0 and len(self.player_two.remaining_ships) > 0:
+            print("\n" * 20)
+            print("Round: " + str(self.round))
+            guess = self.player_one.turn_start()
+            self.player_two.my_board = self.player_one.hit_check(guess, self.player_two.my_board)
+            guess = self.player_two.turn_start()
+            self.player_one.my_board = self.player_two.hit_check(guess, self.player_one.my_board)
+            self.round += 1
 
     def display_boards(self):
         self.player_one.display_board()
@@ -40,8 +48,5 @@ class Game:
         self.player_two.display_board()
         self.player_two.display_remaining_ships()
 
-    def player_one_turn(self):
-        self.round += 1
-        print("\n" * 24)
-        print(self.round)
+
 
