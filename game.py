@@ -39,12 +39,21 @@ class Game:
             print("Round: " + str(self.round))
             guess = self.player_one.turn_start()
             self.player_two.my_board = self.player_one.hit_check(guess, self.player_two.my_board)
-            self.remove_destroyed_ships(self.player_one)
+            self.player_two.ship_hit_check(guess)
+            self.remove_destroyed_ships(self.player_two)
+            print(f"{self.player_two.name}'s turn, please leave {self.player_one.name}.")
             self.countdown(1)
             guess = self.player_two.turn_start()
             self.player_one.my_board = self.player_two.hit_check(guess, self.player_one.my_board)
-            self.remove_destroyed_ships(self.player_two)
+            self.player_one.ship_hit_check(guess)
+            self.remove_destroyed_ships(self.player_one)
             self.countdown(1)
+        if len(self.player_one.fleet.ships) == 0 and len(self.player_two.fleet.ships) == 0:
+            return "Tie Game!"
+        elif len(self.player_two.fleet.ships) == 0:
+            return f"{self.player_one.name} is the winner!"
+        else:
+            return f"{self.player_two.name} is the winner!"
 
 
     def display_boards(self, player):

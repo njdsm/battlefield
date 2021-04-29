@@ -217,13 +217,6 @@ class Player:
         if opponent_board[row][guess] == "S":
             print("Hit!")
             opponent_board[row][guess] = "X"
-            for i in self.fleet.ships:
-                if guess in i.spaces:
-                    i.spaces.remove(guess)
-                    if len(i.spaces) == 0:
-                        print(f"You sank their {i.name}!!!")
-                    else:
-                        print(f"Hit opponent's {i.name}")
             self.opponent_board[row][guess] = "X"
         else:
             print("Miss!")
@@ -240,6 +233,13 @@ class Player:
             print(self.rows[i] + "  " + x)
             i += 1
         print("\n")
+
+    def ship_hit_check(self, guess):
+        for i in self.fleet.ships:
+            if guess in i.spaces:
+                i.spaces.remove(guess)
+                if len(i.spaces) == 0:
+                    print(f"You sank their {i.name}!!!")
 
     # TODO refactor input_loop function line 80 and validate_input function line 68
     # will want strings to be set as variables that pass in.
