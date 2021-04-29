@@ -192,7 +192,8 @@ class Player:
             choice = input(f"Where would you like to check?"
                        f"\n:").capitalize()
         if choice[0] in self.rows and choice[1:] in self.columns:
-            if self.opponent_board[self.rows.index(choice[0])][choice] != "X" and "M":
+            if self.opponent_board[self.rows.index(choice[0])][choice] != "X" and \
+                    self.opponent_board[self.rows.index(choice[0])][choice] != "M":
                 return [choice, False]
             else:
                 print("You already guessed that space, try another one.")

@@ -33,7 +33,7 @@ class Game:
         placed_ships = []
         self.player_two.setup_board(placed_ships)
         print(f"Ok, time to start the game!")
-        while len(self.player_one.remaining_ships) > 0 and len(self.player_two.remaining_ships) > 0:
+        while len(self.player_one.fleet.ships) > 0 and len(self.player_two.fleet.ships) > 0:
             self.round += 1
             print("\n" * 20)
             print("Round: " + str(self.round))
